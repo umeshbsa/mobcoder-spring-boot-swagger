@@ -23,6 +23,17 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    @ApiOperation(value = "root")
+    @RequestMapping(
+            value = "/",
+            method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<BaseResponse> root() {
+        return Validation.getErrorValid(Errors.PASSWORD_6_10, Code.PASSWORD_6_10);
+    }
+
     @ApiOperation(value = "create user profile")
     @RequestMapping(
             value = "/v1/user/create",
@@ -46,7 +57,7 @@ public class UserController {
         try {
             if (email == null || email.length() == 0) {
                 return Validation.getFieldValid(Field.FIELD_EMAIL);
-            }  else if (password == null || password.length() == 0) {
+            } else if (password == null || password.length() == 0) {
                 return Validation.getFieldValid(Field.FIELD_PASSWORD);
             } else {
 
@@ -61,7 +72,7 @@ public class UserController {
             }
         } catch (Exception e) {
 
-            System.out.println("EEEEEE "+e.getMessage());
+            System.out.println("EEEEEE " + e.getMessage());
         }
         return Validation.getErrorValid(Errors.ERROR_WRONG, Code.CODE_WRONG);
     }
