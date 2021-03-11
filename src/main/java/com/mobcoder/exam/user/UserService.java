@@ -87,33 +87,6 @@ public class UserService implements UserDetailsService {
         return Validation.getResponseValid(usersListData);
     }
 
-
-    public ResponseEntity<BaseResponse> userSignIn(String email, String password) {
-        User userData = userRepo.findByUsername(email);
-
-        if (userData != null) {
-            boolean isPasswordMatch = passwordEncoder.matches(password, userData.password);
-            if (isPasswordMatch) {
-                Map<String, Object> usersListData = new HashMap<>();
-                ProfileDto userProfile = BaseResponse.getProfileDtoData(userData);
-                String accessToken = getAccessToken(email, password);
-                usersListData.put(Key.USER, userProfile);
-                usersListData.put(Key.MESSAGE, Success.USER_DATA);
-                usersListData.put(Key.ACCESS_TOKEN, accessToken);
-                return Validation.getResponseValid(usersListData);
-            } else {
-                return Validation.getErrorValid(Errors.EMAIL_PASSWORD_WRONG, Code.EMAIL_PASSWORD_WRONG);
-            }
-        } else {
-            return Validation.getErrorValid(Errors.USER_NOT_EXIST, Code.USER_NOT_EXIST);
-        }
-
-    }
-
-    public void delete(long id) {
-        userRepo.deleteById(id);
-    }
-
     public String getAccessToken(String username, String password) {
 
         String uuid = UUID.randomUUID().toString();
@@ -151,72 +124,4 @@ public class UserService implements UserDetailsService {
         return "Basic " + new String(encodedBytes);
     }
 
-    public ResponseEntity<BaseResponse> forgotPassword(String email) {
-        User userData = userRepo.findByUsername(email);
-        if (userData != null) {
-            Map<String, Object> usersListData = new HashMap<>();
-            String newPassword = "654321";
-            userData.password = passwordEncoder.encode(newPassword);
-            userRepo.save(userData);
-            usersListData.put(Key.MESSAGE, "Password change " + newPassword);
-            return Validation.getResponseValid(usersListData);
-        } else {
-            return Validation.getErrorValid(Errors.USER_NOT_EXIST, Code.USER_NOT_EXIST);
-        }
-    }
-
-    public ResponseEntity<BaseResponse> changePassword(String email, String oldPassword, String newPassword) {
-
-        if (oldPassword.equals(newPassword)) {
-            return Validation.getErrorValid(Errors.OLD_NEW_MATCH, Code.CODE_OLD_NEW_PASSWORD_NOT_MATCH);
-        } else {
-
-            User dd = userRepo.findByUsername(email);
-            if (dd != null) {
-                boolean isPasswordMatch = passwordEncoder.matches(oldPassword, dd.password);
-                if (isPasswordMatch) {
-                    Map<String, Object> dataMap = new HashMap<>();
-                    dd.password = passwordEncoder.encode(newPassword);
-                    userRepo.save(dd);
-                    dataMap.put(Key.MESSAGE, "Password change successfully");
-                    return Validation.getResponseValid(dataMap);
-                } else {
-                    return Validation.getErrorValid(Errors.OLD_PASSWORD_WRONG, Code.OLD_PASSWORD_WRONG);
-                }
-            } else {
-                return Validation.getErrorValid(Errors.USER_NOT_EXIST, Code.USER_NOT_EXIST);
-            }
-        }
-    }
-
-    public ResponseEntity<BaseResponse> checkEmailExist(String email) {
-        User dd = userRepo.findByUsername(email);
-        Map<String, Object> dataMap = new HashMap<>();
-        if (dd != null) {
-            dataMap.put(Key.IS_EXIST, true);
-            dataMap.put(Key.MESSAGE, "Already user exist.");
-            return Validation.getResponseValid(dataMap);
-        } else {
-            dataMap.put(Key.IS_EXIST, false);
-            dataMap.put(Key.MESSAGE, "User not exist ");
-            return Validation.getResponseValid(dataMap);
-        }
-    }
-
-    public ResponseEntity<BaseResponse> checkForAdminLogin(User user, String password) {
-        Map<String, Object> usersListData = new HashMap<>();
-        User userData = userRepo.findByUsername(user.getUsername());
-        if (userData == null) {
-            user.password = passwordEncoder.encode(password);
-            user.isAdmin = true;
-            userData = userRepo.save(user);
-        }
-
-        ProfileDto userProfile = BaseResponse.getProfileDtoData(userData);
-        String accessToken = getAccessToken(userData.username, password);
-        usersListData.put(Key.USER, userProfile);
-        usersListData.put(Key.MESSAGE, Success.USER_DATA);
-        usersListData.put(Key.ACCESS_TOKEN, accessToken);
-        return Validation.getResponseValid(usersListData);
-    }
 }

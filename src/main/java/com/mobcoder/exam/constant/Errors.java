@@ -11,5 +11,5 @@ public class Errors {
     public static final String QUESTION_NOT_EXIST = "Question not exist";
 
     public static final String ADMIN_WRONG = "Admin email and password is wrong";
-    public static final String ADMIN_QUESTION = "Only admin can set question/answer";
+    public static final String ADMIN_QUESTION = "This is for admin only";
 }

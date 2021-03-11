@@ -23,21 +23,19 @@ public class Question extends AuditModel {
     public Long id;
 
     @NotNull
-    @Email
-    @Size(max = 200)
     public String question;
 
     @NotNull
-    public String answer1;
+    public String answera;
 
     @NotNull
-    public String answer2;
+    public String answerb;
 
     @NotNull
-    public String answer3;
+    public String answerc;
 
     @NotNull
-    public String answer4;
+    public String answerd;
 
-    public int finalAnswer;
+    public String finalAnswer;
 }

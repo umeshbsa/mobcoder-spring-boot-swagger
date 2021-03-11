@@ -19,4 +19,7 @@ public class Success {
     public static final String QUESTION_CREATE = "Question create successfully";
     public static final String QUESTION_UPDATE = "Question updated successfully";
     public static final String QUESTION_DELETE = "Question deleted successfully";
+    public static final String QUIZ_START = "Quiz started now";
+    public static final String QUIZ_END = "Quiz ended now";
+
 }

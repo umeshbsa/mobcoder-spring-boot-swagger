@@ -2,6 +2,7 @@ package com.mobcoder.exam.constant;
 
 public class Key {
     public final static String USER = "user";
+    public final static String QUIZ = "quiz";
     public final static String COUNT = "count";
     public final static String USERS = "users";
     public final static String GROUPS = "groups";

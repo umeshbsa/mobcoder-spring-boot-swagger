@@ -5,8 +5,7 @@ import com.mobcoder.exam.constant.Code;
 import com.mobcoder.exam.constant.Errors;
 import com.mobcoder.exam.constant.Field;
 import com.mobcoder.exam.utils.Validation;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,24 +16,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
+@Api(description = "create, update, delete and get user data", tags = {"User"})
 @RestController
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-
-    @ApiOperation(value = "root")
-    @RequestMapping(
-            value = "/",
-            method = RequestMethod.POST,
-            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<BaseResponse> root() {
-        return Validation.getErrorValid(Errors.PASSWORD_6_10, Code.PASSWORD_6_10);
-    }
-
-    @ApiOperation(value = "create user profile")
+    @ApiOperation(value = "Create user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = ProfileDto.class)
+    })
     @RequestMapping(
             value = "/v1/user/create",
             method = RequestMethod.POST,

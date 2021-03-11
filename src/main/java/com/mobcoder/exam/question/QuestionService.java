@@ -68,7 +68,7 @@ public class QuestionService {
             String a2,
             String a3,
             String a4,
-            int finalAnswer) {
+            String finalAnswer) {
 
         Optional<Question> qq = questionRepo.findById(questionId);
 
@@ -81,22 +81,22 @@ public class QuestionService {
             }
 
             if (a1 != null && a1.length() != 0) {
-                question.answer1 = a1;
+                question.answera= a1;
             }
 
             if (a2 != null && a2.length() != 0) {
-                question.answer2 = a2;
+                question.answerb = a2;
             }
 
             if (a3 != null && a3.length() != 0) {
-                question.answer3 = a3;
+                question.answerc = a3;
             }
 
             if (a4 != null && a4.length() != 0) {
-                question.answer4 = a4;
+                question.answerd = a4;
             }
 
-            if (finalAnswer >= 0) {
+            if (finalAnswer != null && finalAnswer.length() != 0) {
                 question.finalAnswer = finalAnswer;
             }
 

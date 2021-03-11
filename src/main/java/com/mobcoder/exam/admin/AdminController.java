@@ -4,12 +4,13 @@ import com.mobcoder.exam.base.BaseResponse;
 import com.mobcoder.exam.constant.Code;
 import com.mobcoder.exam.constant.Errors;
 import com.mobcoder.exam.constant.Field;
+import com.mobcoder.exam.question.Question;
+import com.mobcoder.exam.user.ProfileDto;
 import com.mobcoder.exam.user.User;
 import com.mobcoder.exam.user.UserService;
 import com.mobcoder.exam.utils.AppConstant;
 import com.mobcoder.exam.utils.Validation;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Api(description = "admin login to create question", tags = {"Admin"})
 @RestController
 public class AdminController {
 
@@ -25,12 +27,15 @@ public class AdminController {
     private UserService userService;
 
     @ApiOperation(value = "only for admin login to create question")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = ProfileDto.class),
+    })
     @RequestMapping(
             value = "/v1/admin/login",
             method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<BaseResponse> userSignUp(
+    public ResponseEntity<BaseResponse> adminLogin(
 
             @ApiParam(
                     name = "email",
@@ -53,9 +58,10 @@ public class AdminController {
                 if (AppConstant.ADMIN_EMAIL.equals(email) && password.equals(AppConstant.ADMIN_PASSWORD)) {
                     User user = new User();
                     user.username = email;
-                    return userService.checkForAdminLogin(user, password);
+                    user.isAdmin = true;
+                    return userService.userSignUp(user, password);
                 } else {
-                    Validation.getErrorValid(Errors.ADMIN_WRONG, Code.CODE_WRONG);
+                   return Validation.getErrorValid(Errors.ADMIN_WRONG, Code.CODE_WRONG);
                 }
             }
         } catch (Exception e) {

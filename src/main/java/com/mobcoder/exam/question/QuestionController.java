@@ -4,10 +4,10 @@ import com.mobcoder.exam.base.BaseResponse;
 import com.mobcoder.exam.constant.Code;
 import com.mobcoder.exam.constant.Errors;
 import com.mobcoder.exam.constant.Field;
+import com.mobcoder.exam.user.ProfileDto;
 import com.mobcoder.exam.utils.AppConstant;
 import com.mobcoder.exam.utils.Validation;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-@ApiOperation(value = "Only for Admin")
+import java.util.List;
+
+@Api(description = "create, update, delete and get question data", tags = {"Question"})
 @RestController
 public class QuestionController {
 
@@ -23,7 +25,10 @@ public class QuestionController {
     private QuestionService questionService;
 
 
-    @ApiOperation(value = "Create question - Only for admin")
+    @ApiOperation(value = "Create question")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = Question.class),
+    })
     @RequestMapping(
             value = "/v1/question/create",
             method = RequestMethod.POST,
@@ -38,62 +43,68 @@ public class QuestionController {
             @RequestParam String access_token,
 
             @ApiParam(
+                    value = "Your question.",
                     name = "question",
                     type = "String",
                     required = true)
             @RequestParam String question,
 
             @ApiParam(
-                    name = "answer1",
+                    value = "Your 1st answer.",
+                    name = "answera",
                     type = "String",
                     required = true)
-            @RequestParam String answer1,
+            @RequestParam String answera,
 
             @ApiParam(
-                    name = "answer2",
+                    value = "Your 2nd answer.",
+                    name = "answerb",
                     type = "String",
                     required = true)
-            @RequestParam String answer2,
+            @RequestParam String answerb,
 
             @ApiParam(
-                    name = "answer3",
+                    value = "Your 3rd answer.",
+                    name = "answerc",
                     type = "String",
                     required = true)
-            @RequestParam String answer3,
+            @RequestParam String answerc,
 
             @ApiParam(
-                    name = "answer4",
+                    value = "Your 4th answer.",
+                    name = "answerd",
                     type = "String",
                     required = true)
-            @RequestParam String answer4,
+            @RequestParam String answerd,
 
 
             @ApiParam(
-                    name = "finalAnswer",
-                    type = "Integer",
+                    value = "Your right answer. Answer can only a, b, c, d.",
+                    name = "rightAnswer",
+                    type = "String",
                     required = true)
-            @RequestParam int finalAnswer) {
+            @RequestParam String rightAnswer) {
 
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null && auth.getName() != null && auth.getName().equals(AppConstant.ADMIN_EMAIL)) {
                 if (question == null || question.length() == 0) {
                     return Validation.getFieldValid(Field.FIELD_TITLE);
-                } else if (answer1 == null || answer1.length() == 0
-                        || answer2 == null || answer2.length() == 0
-                        || answer3 == null || answer3.length() == 0
-                        || answer4 == null || answer4.length() == 0) {
+                } else if (answera == null || answera.length() == 0
+                        || answerb == null || answerb.length() == 0
+                        || answerc == null || answerc.length() == 0
+                        || answerd == null || answerd.length() == 0) {
                     return Validation.getFieldValid(Field.FIELD_QUESTION);
-                } else if (finalAnswer <= 0) {
+                } else if (!rightAnswer.contains("abcd")) {
                     return Validation.getFieldValid(Field.FIELD_ANSWER);
                 } else {
                     Question user = new Question();
                     user.question = question;
-                    user.answer1 = answer1;
-                    user.answer2 = answer2;
-                    user.answer3 = answer3;
-                    user.answer4 = answer4;
-                    user.finalAnswer = finalAnswer;
+                    user.answera = answera;
+                    user.answerb = answerb;
+                    user.answerc = answerc;
+                    user.answerd = answerd;
+                    user.finalAnswer = rightAnswer;
                     return questionService.createQuestion(user);
                 }
             } else {
@@ -105,6 +116,9 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "get all question")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = Question.class),
+    })
     @RequestMapping(
             value = "/v1/question/all",
             method = RequestMethod.GET,
@@ -124,6 +138,9 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "get question by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = Question.class),
+    })
     @RequestMapping(value = "/v1/question/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -147,6 +164,9 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "Update question - Only for admin")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = Question.class),
+    })
     @RequestMapping(value = "/v1/question/update", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -158,63 +178,69 @@ public class QuestionController {
             @RequestParam String access_token,
 
             @ApiParam(
+                    value = "Your questionId.",
                     name = "questionId",
                     type = "Integer",
                     required = true)
             @RequestParam Long questionId,
 
             @ApiParam(
+                    value = "Your question.",
                     name = "question",
                     type = "String",
                     required = true)
             @RequestParam String question,
 
             @ApiParam(
-                    name = "answer1",
+                    value = "Your 1st answer.",
+                    name = "answera",
                     type = "String",
                     required = true)
-            @RequestParam String answer1,
+            @RequestParam String answera,
 
             @ApiParam(
-                    name = "answer2",
+                    value = "Your 2nd answer.",
+                    name = "answerb",
                     type = "String",
                     required = true)
-            @RequestParam String answer2,
+            @RequestParam String answerb,
 
             @ApiParam(
-                    name = "answer3",
+                    value = "Your 3rd answer.",
+                    name = "answerc",
                     type = "String",
                     required = true)
-            @RequestParam String answer3,
+            @RequestParam String answerc,
 
             @ApiParam(
-                    name = "answer4",
+                    value = "Your 4th answer.",
+                    name = "answerd",
                     type = "String",
                     required = true)
-            @RequestParam String answer4,
-
+            @RequestParam String answerd,
 
             @ApiParam(
-                    name = "finalAnswer",
-                    type = "Integer",
+                    value = "Your right answer. Answer can only a, b, c, d.",
+                    name = "rightAnswer",
+                    type = "String",
                     required = true)
-            @RequestParam int finalAnswer) {
+            @RequestParam String rightAnswer) {
 
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null && auth.getName() != null && auth.getName().equals(AppConstant.ADMIN_EMAIL)) {
                 if (question == null || question.length() == 0) {
                     return Validation.getFieldValid(Field.FIELD_TITLE);
-                } else if (answer1 == null || answer1.length() == 0
-                        || answer2 == null || answer2.length() == 0
-                        || answer3 == null || answer3.length() == 0
-                        || answer4 == null || answer4.length() == 0) {
+                } else if (answera == null || answera.length() == 0
+                        || answerb == null || answerb.length() == 0
+                        || answerc == null || answerc.length() == 0
+                        || answerd == null || answerd.length() == 0) {
                     return Validation.getFieldValid(Field.FIELD_QUESTION);
-                } else if (finalAnswer <= 0) {
+                }else if (!rightAnswer.contains("abcd")) {
                     return Validation.getFieldValid(Field.FIELD_ANSWER);
                 } else {
-                    return questionService.editQuestion(questionId, question, answer1, answer2, answer3,
-                            answer4, finalAnswer);
+                    return questionService.editQuestion(questionId, question, answera, answerb, answerc,
+                            answerd, rightAnswer);
                 }
             } else {
                 return Validation.getErrorValid(Errors.ADMIN_QUESTION, Code.CODE_WRONG);
@@ -224,8 +250,10 @@ public class QuestionController {
         return Validation.getErrorValid(Errors.ERROR_WRONG, Code.CODE_WRONG);
     }
 
-
     @ApiOperation(value = "Delete question - Only for admin")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = Question.class),
+    })
     @RequestMapping(value = "/v1/question/delete",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE
