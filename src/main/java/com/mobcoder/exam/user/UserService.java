@@ -87,6 +87,19 @@ public class UserService implements UserDetailsService {
         return Validation.getResponseValid(usersListData);
     }
 
+
+    public ResponseEntity<BaseResponse> deleteUser(String email) {
+        User userDatao = userRepo.findByUsername(email);
+        if (userDatao != null) {
+            userRepo.delete(userDatao);
+            Map<String, Object> usersListData = new HashMap<>();
+            usersListData.put(Key.MESSAGE, Success.USER_DELETE);
+            return Validation.getResponseValid(usersListData);
+        } else {
+            return Validation.getErrorValid(Errors.USER_NOT_EXIST, Code.USER_NOT_EXIST);
+        }
+    }
+
     public String getAccessToken(String username, String password) {
 
         String uuid = UUID.randomUUID().toString();

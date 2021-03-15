@@ -95,9 +95,9 @@ public class QuestionController {
                         || answerc == null || answerc.length() == 0
                         || answerd == null || answerd.length() == 0) {
                     return Validation.getFieldValid(Field.FIELD_QUESTION);
-                } else if (!rightAnswer.contains("abcd")) {
+                } /*else if (!rightAnswer.contains("abcd")) {
                     return Validation.getFieldValid(Field.FIELD_ANSWER);
-                } else {
+                } */else {
                     Question user = new Question();
                     user.question = question;
                     user.answera = answera;

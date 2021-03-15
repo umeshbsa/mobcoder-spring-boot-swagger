@@ -30,7 +30,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "successful operation", response = ProfileDto.class)
     })
     @RequestMapping(
-            value = "/v1/user/create",
+            value = "/v1/user/login",
             method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -67,6 +67,30 @@ public class UserController {
         } catch (Exception e) {
 
             System.out.println("EEEEEE " + e.getMessage());
+        }
+        return Validation.getErrorValid(Errors.ERROR_WRONG, Code.CODE_WRONG);
+    }
+
+
+    @ApiOperation(value = "delete user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "successful operation", response = ProfileDto.class)
+    })
+    @RequestMapping(value = "/v1/user/delete",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<BaseResponse> deleteUser(
+            @ApiParam(
+                    name = "access_token",
+                    type = "String",
+                    required = true)
+            @RequestParam String access_token
+    ) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            return userService.deleteUser(auth.getName());
+        } catch (Exception ignored) {
         }
         return Validation.getErrorValid(Errors.ERROR_WRONG, Code.CODE_WRONG);
     }
